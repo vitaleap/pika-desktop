@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.wordWrap": "on",
+  "editor.indentSize": 2,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": ".npmrc, bun.lock, bunfig.toml, tsconfig.json, env.d.ts",
+    "vite.config.ts": "electrobun.config.ts, build.pre.ts, *.config.ts",
+    ".gitignore": ".gitattributes",
+    "vite-env.d.ts": "*.d.ts",
+    "AGENTS.md": "CLAUDE.md"
+  },
+  "css.customData": [".vscode/css-directives.json"],
+  "unocss.autocomplete.matchType": "fuzzy",
+  "unocss.autocomplete.strict": true
+}

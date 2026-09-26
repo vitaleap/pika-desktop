@@ -1,0 +1,63 @@
+:root {
+  --default-font-family: 'Roboto', 'Noto Sans SC', system-ui;
+  --color-bg-1: rgb(250, 250, 250); // 整体背景色
+  --color-bg-2: rgb(255, 255, 255); // 一级容器
+  --color-bg-3: rgb(240, 240, 240); // 二级容器（嵌套元素/浮动层）
+  --color-bg-4: rgb(232, 232, 232); // 三级容器
+
+  --color-text-1: rgb(29, 33, 41);
+  --color-text-2: rgb(78, 89, 105);
+  --color-text-3: rgb(113, 113, 123);
+  --color-text-4: rgb(201, 205, 212);
+
+  --color-hover: rgb(232, 232, 232);
+  --color-active: rgba(46, 51, 56, 0.08);
+  --color-border: rgb(238, 238, 238);
+
+  --scrollbar-thumb-color: rgba(0, 0, 0, 0.25);
+  --scrollbar-thumb-color-hover: rgba(0, 0, 0, 0.4);
+
+  /* Firefox 和新版本 Chrome、Safari、Edge 兼容性 */
+  // scrollbar-width: thin; /* 滚动条宽度：thin（细）、auto（默认） */
+  // scrollbar-color: var(--thumb-color) rgba(0, 0, 0, 0); /* 滑块颜色 轨道颜色 */
+}
+
+html[theme-mode='dark'] {
+  --color-bg-1: rgb(16, 16, 20);
+  --color-bg-2: rgb(24, 24, 28);
+  --color-bg-3: rgb(42, 42, 43);
+  --color-bg-4: rgb(49, 49, 50);
+
+  --color-text-1: rgb(246, 246, 246);
+  --color-text-2: rgb(197, 197, 197);
+  --color-text-3: rgb(159, 159, 169);
+  --color-text-4: rgb(95, 95, 96);
+
+  --color-hover: rgba(255, 255, 255, 0.09);
+  --color-active: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.09);
+
+  --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-color-hover: rgba(255, 255, 255, 0.3);
+}
+
+/* Webkit 浏览器（老版本 Chrome、Safari、Edge） */
+::-webkit-scrollbar {
+  height: 5px; /* 水平滚动条高度 */
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0); /* 轨道背景色 */
+  border-radius: 6px; /* 圆角 */
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color); /* 滑块颜色 */
+  border-radius: 5px; /* 圆角 */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-color-hover); /* 悬停时的滑块颜色 */
+}
+
+html {
+  font-family: var(--default-font-family);
+}

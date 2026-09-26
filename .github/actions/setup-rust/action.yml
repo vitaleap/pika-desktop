@@ -1,0 +1,55 @@
+name: Setup Rust
+description: 为 src-tauri 安装 Linux 系统依赖、Rust toolchain 与 cargo 缓存
+
+inputs:
+  components:
+    description: '逗号分隔的 rustup 组件（如 "clippy, rustfmt"）；留空表示不安装额外组件'
+    required: false
+    default: ''
+  targets:
+    description: '逗号分隔的 target triple（如 "x86_64-apple-darwin"）；留空表示仅安装 host target'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # Linux 需要 webkit2gtk 等系统库，tauri 官方在 README 列出的依赖。
+    # 与 release.yml 共享同一份包列表，避免后续漂移；否则 glib-sys 等 crate 的 build script 会失败。
+    # xdg-utils 提供 /usr/bin/xdg-open：appimage 打包的 "Patching with bundle type
+    # information" 阶段会启动可执行文件探测元数据，应用启动链路上会用到 xdg-open
+    # （如 tauri-plugin-opener 在 Linux 默认走它），缺失会直接报
+    # "xdg-open binary not found" 终止构建。deb/rpm 不启动二进制，所以只在打
+    # appimage 时炸，但为统一环境两个 runner 都装上。
+    - name: Install Linux system dependencies
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libwebkit2gtk-4.1-dev \
+          build-essential \
+          curl \
+          wget \
+          file \
+          libxdo-dev \
+          libssl-dev \
+          libayatana-appindicator3-dev \
+          librsvg2-dev \
+          xdg-utils
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: ${{ inputs.components }}
+        targets: ${{ inputs.targets }}
+
+    # 用 os + arch + targets 拼 cache key，隔离不同 runner 架构与矩阵 target 的缓存，
+    # 避免 cargo 编译产物错位（如 amd64 vs arm64、x86_64-apple-darwin vs aarch64-apple-darwin）。
+    - name: Rust cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: src-tauri -> target
+        # targets 为空时短路走 `-cargo` 分支，非空时拼接 `-<targets>-cargo`，避免出现双横杠。
+        # 用 && || 而非三元 ?:，因为表达式里的 `: '...'` 会被 YAML plain scalar 误判为 mapping 分隔。
+        key: ${{ runner.os }}-${{ runner.arch }}${{ inputs.targets && format('-{0}-cargo', inputs.targets) || '-cargo' }}

@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window and updater window. tauri-plugin-single-instance 是纯后端插件（仅在 Rust 端拦截重复启动、不暴露任何前端命令），因此无需在 permissions 中声明 single-instance 条目。",
+  "windows": ["main", "update"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-focus",
+    "opener:default",
+    "updater:default",
+    "notification:default",
+    "log:default"
+  ]
+}

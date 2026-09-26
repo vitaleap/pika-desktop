@@ -1,0 +1,44 @@
+name: Setup bun
+description: Cache and setup bun runtime for workflows
+
+runs:
+  using: composite
+  steps:
+    - name: Cache bun and dependencies
+      uses: actions/cache@v5
+      id: cache
+      with:
+        path: |
+          ~/.bun
+        # 缓存 key 必须包含 runner.arch：Linux 下 amd64 与 arm64 runner.os 都是 Linux，
+        # 不加架构区分会让 arm64 runner 命中 amd64 的缓存，得到 x86_64 的 bun 而报错。
+        key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ hashFiles('**/bun.lock') }}
+        # 跨架构 fallback：旧 key 命中时仍可加速下载，但步骤会重新跑 setup-bun 安装正确架构的二进制。
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-bun-
+
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+
+    - name: Setup bun
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: oven-sh/setup-bun@v2
+
+    # Windows 上的 $HOME 是 Git Bash 的 POSIX 路径（如 /c/Users/runneradmin），
+    # 写到 GITHUB_ENV 后 Windows 步骤读不到，会导致 tauri-action 找不到 bun。
+    # 这里按 runner.os 分别注入 PATH，Windows 用 %USERPROFILE%\.bun\bin。
+    - name: Set bun env (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $bunBin = Join-Path $env:USERPROFILE '.bun\bin'
+        "BUN_INSTALL=$env:USERPROFILE\.bun" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        "PATH=$bunBin;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Set bun env (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "BUN_INSTALL=$HOME/.bun" >> "$GITHUB_ENV"
+        echo "PATH=$HOME/.bun/bin:$PATH" >> "$GITHUB_ENV"

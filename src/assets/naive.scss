@@ -1,0 +1,45 @@
+.n-input {
+  & .n-input__prefix .n-icon {
+    margin-right: calc(var(--n-padding-left, 12px) - 8px);
+  }
+  & .n-input__state-border {
+    box-shadow: unset !important;
+    border-radius: var(--n-border-radius, 3px);
+  }
+}
+
+.n-button,
+.n-dropdown-option-body,
+.n-menu-item-content {
+  cursor: default !important;
+}
+
+.n-button:not(.n-button--disabled) {
+  --n-border-focus: --n-border !important;
+  &:focus {
+    background-color: var(--n-color);
+    color: var(--n-text-color);
+  }
+  &:hover {
+    background-color: var(--n-color-hover);
+    color: var(--n-text-color-hover);
+  }
+  &:active {
+    background-color: var(--n-color-pressed);
+    color: var(--n-text-color-pressed);
+  }
+  &.n-button--default-type {
+    transition: unset;
+    .n-button__state-border {
+      transition: unset;
+    }
+  }
+}
+
+.n-form-item .n-form-item-feedback-wrapper {
+  font-size: 12px;
+}
+
+.n-text {
+  white-space: break-spaces;
+}
